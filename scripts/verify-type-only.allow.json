@@ -1,0 +1,4 @@
+{
+  "src/redux/hooks.ts": "Phase 3: typed hooks = react-redux's own useSelector/useDispatch/useStore via .withTypes() (identity at runtime). Not imported by any existing file.",
+  "src/components/cart/CartDrawer.tsx": "WEB_PARITY_V4.0.2 §1: rewritten as the whole cart + checkout flow (the cart and checkout pages are gone). Runtime code changed on purpose; this file is no longer a type-only conversion."
+}

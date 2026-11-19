@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /cart
+Disallow: /checkout
+Disallow: /profile
+Disallow: /order-detail
+Disallow: /web-payment-status
+
+Sitemap: https://speedoo.org/sitemap.xml

@@ -1,0 +1,29 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="50" cy="51" rx="17" ry="40" fill="#000000" fill-opacity="0.16"/>
+<rect x="42.5" y="3.5" width="11" height="20" rx="5.5" fill="#FFFFFF"/>
+<rect x="42.5" y="71.5" width="11" height="21" rx="5.5" fill="#FFFFFF"/>
+<rect x="25.5" y="21.5" width="45" height="9" rx="4.5" fill="#FFFFFF"/>
+<circle cx="32" cy="19.5" r="3.6" fill="#FFFFFF"/>
+<circle cx="64" cy="19.5" r="3.6" fill="#FFFFFF"/>
+<path d="M37.5 41.5Q31 36.5 30.5 27M58.5 41.5Q65 36.5 65.5 27" stroke="#FFFFFF" stroke-width="8.5" stroke-linecap="round"/>
+<ellipse cx="48" cy="44" rx="15" ry="9.5" fill="#FFFFFF"/>
+<rect x="44" y="5" width="8" height="17" rx="4" fill="#262626"/>
+<rect x="44" y="73" width="8" height="18" rx="4" fill="#262626"/>
+<path d="M48 9C55.5 9 57.5 16 57.5 24V70C57.5 78.5 54 84 48 84C42 84 38.5 78.5 38.5 70V24C38.5 16 40.5 9 48 9Z" fill="#FF9900" stroke="#FFFFFF" stroke-width="2"/>
+<path d="M48 11.5C53.5 11.5 55 16.5 55 22.5H41C41 16.5 42.5 11.5 48 11.5Z" fill="#FFB547"/>
+<ellipse cx="48" cy="12.5" rx="3" ry="1.8" fill="#FFF4CC"/>
+<path d="M33 24L32 21.5M63 24L64 21.5" stroke="#262626" stroke-width="1.6" stroke-linecap="round"/>
+<circle cx="32" cy="19.5" r="2.4" fill="#262626"/>
+<circle cx="64" cy="19.5" r="2.4" fill="#262626"/>
+<rect x="29" y="24" width="38" height="4" rx="2" fill="#262626"/>
+<rect x="27" y="23" width="6" height="6" rx="2.5" fill="#111111"/>
+<rect x="63" y="23" width="6" height="6" rx="2.5" fill="#111111"/>
+<rect x="33" y="51" width="30" height="27" rx="4.5" fill="#E07A00" stroke="#FFFFFF" stroke-width="2"/>
+<rect x="37" y="55" width="22" height="19" rx="2.5" fill="#FF9900"/>
+<rect x="42" y="62.5" width="12" height="4" rx="2" fill="#FFFFFF" fill-opacity="0.9"/>
+<path d="M37.5 41.5Q31 36.5 30.5 27M58.5 41.5Q65 36.5 65.5 27" stroke="#2F2F2F" stroke-width="4.5" stroke-linecap="round"/>
+<ellipse cx="48" cy="44" rx="13.5" ry="8" fill="#2F2F2F"/>
+<circle cx="48" cy="40.5" r="8.6" fill="#FFFFFF" stroke="#DADADA" stroke-width="0.8"/>
+<rect x="46" y="32.1" width="4" height="16.8" rx="2" fill="#FF9900"/>
+<path d="M40.9 35.7A8.6 8.6 0 0 1 55.1 35.7" stroke="#262626" stroke-width="2.6" stroke-linecap="round"/>
+</svg>
