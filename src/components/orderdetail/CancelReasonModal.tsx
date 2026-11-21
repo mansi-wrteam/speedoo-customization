@@ -5,6 +5,8 @@ import { t } from '@/utils/translation';
 import * as api from "@/api/apiRoutes"
 import { toast } from 'react-toastify';
 import type { OrderItem } from '@/types/models';
+import CreditCancelNote from './CreditCancelNote';
+import { useRefreshUser } from '@/utils/useRefreshUser';
 
 export interface CancelReasonModalProps {
     showCancelMoodal: boolean;
@@ -12,9 +14,12 @@ export interface CancelReasonModalProps {
     /** Order line being cancelled. */
     selectedProduct: OrderItem;
     handleFetchOrderDetail: () => Promise<void>;
+    /** The order was paid on credit: explain the schedule change and refresh the wallet. */
+    isCreditOrder?: boolean;
 }
 
-const CancelReasonModal = ({ showCancelMoodal, setShowCancelModal, selectedProduct, handleFetchOrderDetail }: CancelReasonModalProps) => {
+const CancelReasonModal = ({ showCancelMoodal, setShowCancelModal, selectedProduct, handleFetchOrderDetail, isCreditOrder }: CancelReasonModalProps) => {
+    const refreshUser = useRefreshUser();
 
     const [loading, setLoading] = useState(false);
     const [cancelReason, setCancelReason] = useState("")
@@ -37,6 +42,7 @@ const CancelReasonModal = ({ showCancelMoodal, setShowCancelModal, selectedProdu
                 setLoading(false);
                 toast.success(response.message);
                 await handleFetchOrderDetail()
+                if (isCreditOrder) await refreshUser()
                 setShowCancelModal(false)
             } else {
                 toast.error(response.message)
@@ -64,6 +70,7 @@ const CancelReasonModal = ({ showCancelMoodal, setShowCancelModal, selectedProdu
                     </div>
                 </DialogHeader>
                 <div className="p-4 flex flex-col items-end gap-4">
+                    {isCreditOrder && <CreditCancelNote />}
                     <div className="self-stretch flex flex-col gap-1">
                         <label className="text-sm font-normal text-[var(--form-default-label)]">
                             {t("reason")}

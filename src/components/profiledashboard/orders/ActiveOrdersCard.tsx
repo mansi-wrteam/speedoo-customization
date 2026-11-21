@@ -8,6 +8,7 @@ import { canTrackOrder } from "@/utils/orderEta";
 import ReoderConfirmModal from "./ReoderConfirmModal";
 import ImageWithPlaceholder from "@/components/image-with-placeholder/ImageWithPlaceholder";
 import OrderStatusBadge from "@/components/common/OrderStatusBadge";
+import CreditOrderBadge from "@/components/common/CreditOrderBadge";
 import type { RootState } from "@/types/state";
 import type { Order } from "@/types/models";
 
@@ -44,6 +45,7 @@ const ActiveOrdersCard = ({ order }: ActiveOrdersCardProps) => {
               <p className="text-base font-medium leading-6 text-[var(--foreground-primary)]">
                 {order?.id}
               </p>
+              <CreditOrderBadge paymentMethod={order?.payment_method} />
             </div>
             <div className="col-span-3 flex flex-col justify-center gap-1">
               <p className="text-sm font-normal leading-5 text-[var(--foreground-tertiary)]">

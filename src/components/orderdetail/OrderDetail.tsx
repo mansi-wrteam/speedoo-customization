@@ -10,6 +10,7 @@ import OrderItems from "./OrderItems";
 import OrderPrescriptions from "./OrderPrescriptions";
 import OrderStepper from "./OrderStatusStepper";
 import FinalCheckoutSummary from "./FinalCheckoutSummary";
+import { isCreditOrder } from "@/utils/credit";
 import OrderEtaRow from "./OrderEtaRow";
 import BreadCrumb from "../breadcrumb/BreadCrumb";
 import { MdOutlineFileDownload, MdOutlineWatchLater } from "react-icons/md";
@@ -261,6 +262,7 @@ const OrderDetail = () => {
                     products={orderDetail?.items}
                     handleFetchOrderDetail={handleFetchOrderDetail}
                     isShowProductRating={orderDetail?.product_rating == true}
+                    isCreditOrder={isCreditOrder(orderDetail?.payment_method)}
                   />
                 </div>
 

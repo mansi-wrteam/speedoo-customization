@@ -160,7 +160,18 @@ const PaymentStatus = () => {
                   ? t("subscription_add_description")
                   : t("order_placed_description")}
             </h1>
+            {type == "order" && query?.payment_method == "Credit" && (
+              <p className="mt-2 text-base text-[var(--foreground-tertiary)]">{t("credit_order_placed_description")}</p>
+            )}
             <div className="flex flex-col md:flex-row justify-center gap-4 mx-4 mt-8">
+              {type == "order" && query?.payment_method == "Credit" && (
+                <button
+                  className="rounded-lg px-4 py-2 text-base font-medium leading-6 text-[var(--button-outline-foreground-default)] outline outline-1 -outline-offset-1 outline-[var(--button-outline-border-default)] transition-colors hover:bg-[var(--button-outline-background-hover)] hover:text-[var(--button-outline-foreground-hover)]"
+                  onClick={() => router.push("/profile/credit")}
+                >
+                  {t("credit_view_installments")}
+                </button>
+              )}
               <button
                 className="rounded-lg px-4 py-2 text-base font-medium leading-6 bg-[var(--button-primary-background-default)] text-[var(--button-primary-foreground-default)] transition-colors hover:bg-[var(--button-primary-background-hover)]"
                 onClick={

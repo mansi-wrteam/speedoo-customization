@@ -4,6 +4,9 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { CgInfo } from "react-icons/cg";
 import ChargesInfoPopup from "../cart-checkout/ChargesInfoPopup";
+import CreditOrderBadge from "@/components/common/CreditOrderBadge";
+import { LocalizedLink } from "@/utils/localizedNav";
+import { isCreditOrder } from "@/utils/credit";
 import type { Order } from "@/types/models";
 import type { RootState } from "@/types/state";
 
@@ -23,6 +26,17 @@ const FinalCheckoutSummary = ({ orderDetail }: FinalCheckoutSummaryProps) => {
           <span className="text-sm font-medium leading-5 text-[var(--foreground-secondary)]">{t("payment_method")}</span>
           <span className="text-base font-semibold leading-6 text-[var(--foreground-primary)]">{orderDetail?.payment_method}</span>
         </div>
+        {isCreditOrder(orderDetail?.payment_method) && (
+          <div className="flex items-center justify-between gap-2">
+            <CreditOrderBadge paymentMethod={orderDetail?.payment_method} />
+            <LocalizedLink
+              href={`/profile/credit?order_id=${orderDetail?.id}`}
+              className="text-sm font-medium text-[var(--button-link-foreground-default)] underline hover:text-[var(--button-link-foreground-hover)]"
+            >
+              {t("credit_view_installments")}
+            </LocalizedLink>
+          </div>
+        )}
         <div className="flex flex-col gap-4">
           {orderDetail?.transaction_id != 0 && (
             <div className="flex justify-between items-center">

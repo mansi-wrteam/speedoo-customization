@@ -48,6 +48,8 @@ const NotificationCard = ({ notification }: NotificationCardProps) => {
         console.log("Error", error);
         toast.error(t("something_went_wrong"));
       }
+    } else if (notification?.type === "credit") {
+      router.push("/profile/credit");
     } else if (notification?.type === "url") {
       window.open(notification?.link_url, "_blank");
     }

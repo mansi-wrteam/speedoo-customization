@@ -10,6 +10,8 @@ import Subscription from "./subscriptions/Subscriptions";
 import { useRouter } from "next/router";
 import WalletHistory from "./wallet/WalletHistory";
 import TransactionHistory from "./transactions/TransactionHistory";
+import Credit from "./credit/Credit";
+import CouponHistory from "./coupon/CouponHistory";
 import Notifications from "./Notifications";
 import { setCurrentUser } from "@/redux/slices/userSlice";
 import * as api from "@/api/apiRoutes";
@@ -79,6 +81,8 @@ const ProfileDashboard = () => {
                 {activeTab == "wishlist" && <Wishlist />}
                 {activeTab == "wallethistory" && <WalletHistory />}
                 {activeTab == "transaction" && <TransactionHistory />}
+                {activeTab == "credit" && <Credit />}
+                {activeTab == "coupon-history" && <CouponHistory />}
                 {activeTab == "notifications" && (
                   <Notifications
                     selectedTab={selectedTab}

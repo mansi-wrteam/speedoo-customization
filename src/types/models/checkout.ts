@@ -40,6 +40,7 @@ export interface PrescriptionGroup {
  */
 export type PaymentMethod =
   | "COD"
+  | "Credit"
   | "wallet"
   | "razorpay"
   | "paypal"

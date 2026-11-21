@@ -9,6 +9,8 @@ export interface ApiResponse<T = unknown> {
   /** 1 = success, 0 = handled failure (message explains). */
   status: number | string;
   message?: string;
+  /** Stable error key sent by some endpoints (e.g. coupon redeem). Switch on it, never on `message`. */
+  code?: string;
   data: T;
   /** Total record count on paginated lists (used for offset paging). */
   total?: number;

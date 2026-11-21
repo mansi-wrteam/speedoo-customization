@@ -20,6 +20,7 @@ import CheckoutItemRow from "../cart-checkout/CheckoutItemRow";
 import UnavailableItemsCard from "../cart-checkout/UnavailableItemsCard";
 import BillDetailsCard from "../cart-checkout/BillDetailsCard";
 import PaymentAccordion from "../cart-checkout/PaymentAccordion";
+import CreditPaymentOption, { type CreditQuoteState } from "../cart-checkout/CreditPaymentOption";
 import PreferredDeliveryModal from "../cart-checkout/PreferredDeliveryModal";
 import CouponModal from "../cart-checkout/CouponModal";
 import QuickDeliveryCard from "../quick-delivery/QuickDeliveryCard";
@@ -176,6 +177,8 @@ const CartDrawer = ({ showCart, onClose, setMobileActiveKey }: CartDrawerProps) 
   const [showWalletTopUp, setShowWalletTopUp] = useState(false);
   const [topUpAmount, setTopUpAmount] = useState<number | null>(null);
   const [toppedUp, setToppedUp] = useState(false);
+  const [creditPlanId, setCreditPlanId] = useState<Id | null>(null);
+  const [creditQuote, setCreditQuote] = useState<CreditQuoteState>({ quote: null, loading: false });
 
   const [placing, setPlacing] = useState(false);
   const [paymentLoading, setPaymentLoading] = useState(false);
@@ -222,6 +225,7 @@ const CartDrawer = ({ showCart, onClose, setMobileActiveKey }: CartDrawerProps) 
     Boolean(checkout?.isWalletChecked) && walletCoversOrder(orderTotal, walletBalance);
   const amountDue = Math.max(orderTotal - walletUsed, 0);
   const codAllowed = isCodAllowed(checkoutData, setting?.payment_setting);
+  const isCreditSelected = checkout?.selectedPaymentMethod === "Credit";
   const showRxChip = isPrescriptionContext(rows, activeModuleId);
   const uncoveredRx = getUncoveredRequiredVariantIds(rows, checkout?.prescriptionGroups);
   const currency = setting?.setting?.currency ?? "";
@@ -714,6 +718,8 @@ const CartDrawer = ({ showCart, onClose, setMobileActiveKey }: CartDrawerProps) 
     const next = !checkout?.isWalletChecked;
     dispatch(setWalletChecked({ data: next }));
     if (next) {
+      // The backend rejects Credit combined with the wallet.
+      if (checkout?.selectedPaymentMethod === "Credit") dispatch(setPaymentMethod({ data: null }));
       dispatch(setUserWalletBalance({ data: Math.min(walletBalance, orderTotal) }));
       // A wallet that settles the whole order IS the payment method.
       if (walletCoversOrder(orderTotal, walletBalance)) {
@@ -726,6 +732,21 @@ const CartDrawer = ({ showCart, onClose, setMobileActiveKey }: CartDrawerProps) 
       }
     }
   };
+
+  const selectPaymentMethod = (method: PaymentMethod) => {
+    if (method === "Credit" && checkout?.isWalletChecked) {
+      dispatch(setWalletChecked({ data: false }));
+      dispatch(setUserWalletBalance({ data: 0 }));
+    }
+    dispatch(setPaymentMethod({ data: method }));
+  };
+
+  useEffect(() => {
+    if (checkout?.selectedPaymentMethod !== "Credit") {
+      setCreditPlanId(null);
+      setCreditQuote({ quote: null, loading: false });
+    }
+  }, [checkout?.selectedPaymentMethod]);
 
   const openTopUp = (amount: number) => {
     setTopUpAmount(amount);
@@ -796,6 +817,10 @@ const CartDrawer = ({ showCart, onClose, setMobileActiveKey }: CartDrawerProps) 
       toast.error(t("payment_methods_not_available"));
       return false;
     }
+    if (isCreditSelected && (creditPlanId == null || creditQuote.quote?.within_limit === false)) {
+      toast.error(creditPlanId == null ? t("credit_select_plan") : t("insufficient_credit_limit"));
+      return false;
+    }
     return true;
   };
 
@@ -841,7 +866,7 @@ const CartDrawer = ({ showCart, onClose, setMobileActiveKey }: CartDrawerProps) 
     const method = walletCovers ? "wallet" : (checkout?.selectedPaymentMethod as PaymentMethod);
     const capitalizedMethod =
       method === "dpo" ? "DPO" : String(method).charAt(0).toUpperCase() + String(method).slice(1);
-    const status = method === "COD" || method === "wallet" ? 2 : 1;
+    const status = method === "COD" || method === "wallet" || method === "Credit" ? 2 : 1;
 
     try {
       setPlacing(true);
@@ -858,6 +883,7 @@ const CartDrawer = ({ showCart, onClose, setMobileActiveKey }: CartDrawerProps) 
         orderNote: checkout?.orderNote,
         paymentMethod: method,
         promocodeId: cart?.promo_code?.promo_code_id,
+        installmentPlanId: method === "Credit" ? (creditPlanId ?? undefined) : undefined,
         status,
         order_type: checkout?.orderType,
         prescriptionGroups: checkout?.prescriptionGroups?.map((group) => ({
@@ -902,6 +928,10 @@ const CartDrawer = ({ showCart, onClose, setMobileActiveKey }: CartDrawerProps) 
       // No gateway needed — straight to the success page, as before.
       if (method === "COD" || method === "wallet") {
         onOrderSettled(method);
+        return;
+      }
+      if (method === "Credit") {
+        onOrderSettled(method, orderId);
         return;
       }
       if (method === "paystack") {
@@ -1208,6 +1238,11 @@ const CartDrawer = ({ showCart, onClose, setMobileActiveKey }: CartDrawerProps) 
         onFix: () => setPaymentOpen(true),
       });
     }
+    if (isCreditSelected && creditPlanId == null) {
+      blockers.push({ message: t("credit_select_plan"), onFix: () => setPaymentOpen(true) });
+    } else if (isCreditSelected && creditQuote.quote?.within_limit === false) {
+      blockers.push({ message: t("insufficient_credit_limit"), onFix: () => setPaymentOpen(true) });
+    }
   }
 
   // Also disabled while charges recalculate — the total on screen is stale (§1.7).
@@ -1216,6 +1251,7 @@ const CartDrawer = ({ showCart, onClose, setMobileActiveKey }: CartDrawerProps) 
     cartLoadError !== null ||
     paymentInFlight ||
     chargesLoading ||
+    (isCreditSelected && creditQuote.loading) ||
     (signedIn && blockers.length > 0) ||
     unavailable.length > 0;
 
@@ -1501,6 +1537,11 @@ const CartDrawer = ({ showCart, onClose, setMobileActiveKey }: CartDrawerProps) 
               orderType={checkout?.orderType}
               walletUsed={walletUsed}
               payable={amountDue}
+              credit={
+                isCreditSelected && creditQuote.quote
+                  ? { fee: creditQuote.quote.fee, totalPayable: creditQuote.quote.total_payable }
+                  : null
+              }
             />
           </DrawerSection>
 
@@ -1515,7 +1556,18 @@ const CartDrawer = ({ showCart, onClose, setMobileActiveKey }: CartDrawerProps) 
                 onToggleWallet={toggleWallet}
                 onTopUp={openTopUp}
                 method={checkout?.selectedPaymentMethod}
-                onSelectMethod={(method) => dispatch(setPaymentMethod({ data: method }))}
+                onSelectMethod={selectPaymentMethod}
+                creditOption={
+                  <CreditPaymentOption
+                    productIds={rows.map((row) => row.product_id)}
+                    amount={orderTotal}
+                    selected={isCreditSelected}
+                    onSelect={() => selectPaymentMethod("Credit")}
+                    planId={creditPlanId}
+                    onPlanChange={setCreditPlanId}
+                    onQuoteChange={setCreditQuote}
+                  />
+                }
                 codAllowed={codAllowed}
                 isPickup={isPickup}
                 open={paymentOpen}

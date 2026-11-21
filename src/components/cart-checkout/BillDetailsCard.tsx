@@ -20,6 +20,8 @@ export interface BillDetailsCardProps {
   walletUsed?: number;
   /** Order total after the wallet. */
   payable: number;
+  /** Set while Credit is the payment method and a plan is quoted. */
+  credit?: { fee: number | string; totalPayable: number | string } | null;
 }
 
 /**
@@ -33,6 +35,7 @@ const BillDetailsCard = ({
   orderType,
   walletUsed = 0,
   payable,
+  credit,
 }: BillDetailsCardProps) => {
   const setting = useSelector((state: RootState) => state.Setting.setting);
   const [open, setOpen] = useState(true);
@@ -159,6 +162,19 @@ const BillDetailsCard = ({
             <span>{t("total")}</span>
             <span>{amount(hasError ? fallbackSubTotal : payable)}</span>
           </div>
+
+          {credit && !hasError && (
+            <>
+              <div className="flex items-center justify-between pt-2 text-[13px] text-[var(--foreground-secondary)]">
+                <span>{t("credit_installment_fee")}</span>
+                <span>{amount(credit.fee)}</span>
+              </div>
+              <div className="flex items-center justify-between py-1 text-[13px] font-bold text-[var(--foreground-primary)]">
+                <span>{t("credit_total_payable_on_credit")}</span>
+                <span>{amount(credit.totalPayable)}</span>
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>

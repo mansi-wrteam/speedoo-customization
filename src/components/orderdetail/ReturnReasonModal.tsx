@@ -5,6 +5,8 @@ import { t } from '@/utils/translation';
 import { toast } from 'react-toastify';
 import * as api from "@/api/apiRoutes"
 import type { OrderItem } from '@/types/models';
+import CreditCancelNote from './CreditCancelNote';
+import { useRefreshUser } from '@/utils/useRefreshUser';
 
 export interface ReturnReasonModalProps {
     showReturnModal: boolean;
@@ -12,9 +14,12 @@ export interface ReturnReasonModalProps {
     /** Order line being returned. */
     selectedProduct: OrderItem;
     handleFetchOrderDetail: () => Promise<void>;
+    /** The order was paid on credit: explain the schedule change and refresh the wallet. */
+    isCreditOrder?: boolean;
 }
 
-const ReturnReasonModal = ({ showReturnModal, setShowReturnModal, selectedProduct, handleFetchOrderDetail }: ReturnReasonModalProps) => {
+const ReturnReasonModal = ({ showReturnModal, setShowReturnModal, selectedProduct, handleFetchOrderDetail, isCreditOrder }: ReturnReasonModalProps) => {
+    const refreshUser = useRefreshUser();
 
 
     const [returnReason, setReturnReason] = useState("")
@@ -39,6 +44,7 @@ const ReturnReasonModal = ({ showReturnModal, setShowReturnModal, selectedProduc
                 setLoading(false);
                 toast.success(response.message);
                 await handleFetchOrderDetail()
+                if (isCreditOrder) await refreshUser()
                 setShowReturnModal(false)
             } else {
                 toast.error(response.message)
@@ -62,6 +68,7 @@ const ReturnReasonModal = ({ showReturnModal, setShowReturnModal, selectedProduc
                     </div>
                 </DialogHeader>
                 <div className='flex flex-col gap-2'>
+                    {isCreditOrder && <CreditCancelNote />}
                     <div className='flex flex-col gap-1'>
                         <label className='text-base font-medium leading-6 text-[var(--foreground-primary)]'>{t("reason")}<span className='text-[var(--status-error-default)]'>*</span></label>
                         <textarea name="" id="" className='w-full rounded-lg bg-[var(--form-default-background)] p-2 text-[var(--form-default-text)] placeholder:text-[var(--form-default-placeholder)] outline outline-1 -outline-offset-1 outline-[var(--form-default-border)] focus:outline-[var(--form-focus-filled-border)]' placeholder={t("write_return_reason")} onChange={(e) => setReturnReason(e.target.value)} value={returnReason}></textarea>

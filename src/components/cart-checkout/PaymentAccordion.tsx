@@ -26,6 +26,8 @@ export interface PaymentAccordionProps {
   /** `cod_payment_method` AND the charges response both allow it (§1.7). */
   codAllowed: boolean;
   isPickup: boolean;
+  /** Credit & installments row, rendered above the gateways when the wallet does not cover the order. */
+  creditOption?: React.ReactNode;
   /** Controlled so the footer's "select a payment method" warning can open it. */
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -50,6 +52,7 @@ const PaymentAccordion = ({
   onSelectMethod,
   codAllowed,
   isPickup,
+  creditOption,
   open,
   onOpenChange,
 }: PaymentAccordionProps) => {
@@ -65,7 +68,9 @@ const PaymentAccordion = ({
     ? t("use_wallet")
     : method === "COD"
       ? cashLabel
-      : gatewayById(method)?.brandName ?? t("select_payment");
+      : method === "Credit"
+        ? t("credit_payment_label")
+        : gatewayById(method)?.brandName ?? t("select_payment");
 
   const option = (
     id: PaymentMethod,
@@ -159,6 +164,7 @@ const PaymentAccordion = ({
 
           {!walletCovers && (
             <>
+              {creditOption}
               {gateways.map((gateway) =>
                 option(gateway.id, gateway.brandName, gateway.image)
               )}

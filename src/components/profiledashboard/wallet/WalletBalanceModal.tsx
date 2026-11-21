@@ -44,6 +44,7 @@ const StripeModal = dynamic(() => import("@/components/cart-checkout/StripeModal
   ssr: false,
 });
 import { setPhonePeCheckoutDetails } from "@/redux/slices/checkoutSlice";
+import RedeemCouponModal from "../coupon/RedeemCouponModal";
 
 /** A gateway row: its `payment_setting` on/off flag, label key and logo. */
 interface PaymentMethodConfig {
@@ -101,6 +102,7 @@ const WalletBalanceModal = ({
   const [selectedPaymentMethod, setSelectPaymentMethod] = useState<string>();
   const [amount, setAmount] = useState<number | null>(null);
   const [showStripe, setShowStripe] = useState(false);
+  const [showRedeem, setShowRedeem] = useState(false);
   const [stripeClientSecret, setStripeClientSecret] = useState<string | undefined>("");
   const [stripeTransId, setStripeTransId] = useState<string | null | undefined>(null);
 
@@ -490,6 +492,21 @@ const WalletBalanceModal = ({
                   )}
                 </>
               </div>
+              {type == "wallet" && (
+                <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-[var(--surface-subtle)] p-3">
+                  <span className="text-sm text-[var(--foreground-secondary)]">{t("coupon_have_code")}</span>
+                  <button
+                    type="button"
+                    className="text-sm font-medium text-[var(--brand-foreground-default)] underline"
+                    onClick={() => {
+                      setAddWalletModal(false);
+                      setShowRedeem(true);
+                    }}
+                  >
+                    {t("coupon_redeem_title")}
+                  </button>
+                </div>
+              )}
               <div className="flex flex-col gap-3">
                 <h1 className="text-base font-semibold text-[var(--foreground-primary)]">
                   {t("choose_payment_method")}
@@ -583,6 +600,7 @@ const WalletBalanceModal = ({
         type={type}
         subscriptionPlanId={selectedPlan?.id}
       />
+      <RedeemCouponModal open={showRedeem} onOpenChange={setShowRedeem} />
     </div>
   );
 };

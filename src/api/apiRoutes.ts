@@ -28,9 +28,21 @@ import type {
   City,
   Country,
   CountryBackgroundSettings,
+  CouponHistoryEntry,
+  CouponRedeemData,
+  CreditDashboardData,
+  CreditLedgerEntry,
+  CreditOrderDetailData,
+  CreditPayment,
+  CreditPayWalletData,
+  CreditPlansData,
+  CreditQuoteData,
+  CreditStatusData,
   CustomField,
   Faq,
   InitiateTransactionData,
+  Installment,
+  InstallmentStatus,
   Language,
   LanguageListItem,
   LiveTracking,
@@ -1122,6 +1134,8 @@ export interface PlaceOrderParams {
   walletUsed?: boolean;
   orderNote?: Nullable<string>;
   promocodeId?: Id;
+  /** Required when `paymentMethod` is "Credit". */
+  installmentPlanId?: Id;
   /** Order status code (1 payment pending, 2 received). */
   status?: number;
   order_type?: OrderType;
@@ -1143,6 +1157,7 @@ export const placeOrder = async ({
   walletUsed,
   orderNote,
   promocodeId = 0,
+  installmentPlanId,
   status,
   order_type = "doorstep",
   prescription,
@@ -1172,6 +1187,9 @@ export const placeOrder = async ({
   }
   if (promocodeId !== 0) {
     formData.append("promocode_id", promocodeId);
+  }
+  if (finalPaymentMethod === "Credit" && installmentPlanId) {
+    formData.append("installment_plan_id", installmentPlanId);
   }
   // Grouped prescriptions: each group maps selected cart lines to its image(s).
   if (Array.isArray(prescriptionGroups) && prescriptionGroups.length > 0) {
@@ -1760,5 +1778,163 @@ export const updateMailSettings = async ({
     `${apiEndPoints.mailSettings}/${apiEndPoints.save}`,
     formData
   );
+  return response.data;
+};
+
+// Credit & installments
+export const getCreditStatus = async (): Promise<ApiResponse<CreditStatusData>> => {
+  const response = await api.get<ApiResponse<CreditStatusData>>(apiEndPoints.creditStatus);
+  return response.data;
+};
+
+export interface ApplyForCreditParams {
+  documents: File[];
+  /** Same order as `documents`. */
+  documentTypes?: string[];
+  requestedLimit?: Numeric;
+}
+
+export const applyForCredit = async ({
+  documents,
+  documentTypes = [],
+  requestedLimit,
+}: ApplyForCreditParams): Promise<ApiResponse<{ application_id: Id }>> => {
+  const formData: LooseFormData = new FormData();
+  documents.forEach((file) => formData.append("documents[]", file));
+  documentTypes.forEach((type) => formData.append("document_types[]", type));
+  if (requestedLimit !== undefined && requestedLimit !== "") {
+    formData.append("requested_limit", requestedLimit);
+  }
+  const response = await api.post<ApiResponse<{ application_id: Id }>>(apiEndPoints.creditApply, formData);
+  return response.data;
+};
+
+export interface GetCreditPlansParams {
+  /** Defaults to the current cart on the server. */
+  productIds?: Id[];
+  /** Checkout total; when sent every plan includes a `quote`. */
+  amount?: Numeric;
+}
+
+export const getCreditPlans = async ({
+  productIds,
+  amount,
+}: GetCreditPlansParams = {}): Promise<ApiResponse<CreditPlansData>> => {
+  const params: Record<string, string | number> = {};
+  if (productIds?.length) params.product_ids = productIds.join(",");
+  if (amount !== undefined) params.amount = amount;
+  const response = await api.get<ApiResponse<CreditPlansData>>(apiEndPoints.creditPlans, { params });
+  return response.data;
+};
+
+export interface GetCreditQuoteParams {
+  installmentPlanId: Id;
+  /** Checkout final total incl. delivery and charges. */
+  amount: Numeric;
+  productIds?: Id[];
+}
+
+export const getCreditQuote = async ({
+  installmentPlanId,
+  amount,
+  productIds,
+}: GetCreditQuoteParams): Promise<ApiResponse<CreditQuoteData>> => {
+  const formData: LooseFormData = new FormData();
+  formData.append("installment_plan_id", installmentPlanId);
+  formData.append("amount", amount);
+  if (productIds?.length) formData.append("product_ids", productIds.join(","));
+  const response = await api.post<ApiResponse<CreditQuoteData>>(apiEndPoints.creditQuote, formData);
+  return response.data;
+};
+
+export const getCreditDashboard = async (): Promise<ApiResponse<CreditDashboardData>> => {
+  const response = await api.get<ApiResponse<CreditDashboardData>>(apiEndPoints.creditDashboard);
+  return response.data;
+};
+
+export interface GetCreditInstallmentsParams {
+  status?: InstallmentStatus | "upcoming";
+  orderId?: Id;
+  page?: number;
+  limit?: number;
+}
+
+export const getCreditInstallments = async ({
+  status,
+  orderId,
+  page = 1,
+  limit = 20,
+}: GetCreditInstallmentsParams = {}): Promise<ApiResponse<Installment[]>> => {
+  const params: Record<string, string | number> = { page, limit };
+  if (status) params.status = status;
+  if (orderId) params.order_id = orderId;
+  const response = await api.get<ApiResponse<Installment[]>>(apiEndPoints.creditInstallments, { params });
+  return response.data;
+};
+
+export const getCreditOrder = async ({ orderId }: OrderIdParams): Promise<ApiResponse<CreditOrderDetailData>> => {
+  const response = await api.get<ApiResponse<CreditOrderDetailData>>(apiEndPoints.creditOrder, {
+    params: { order_id: orderId },
+  });
+  return response.data;
+};
+
+export interface PayInstallmentWalletParams {
+  installmentId: Id;
+  /** Omit to pay the full remaining amount of the installment. */
+  amount?: Numeric;
+}
+
+export const payInstallmentWithWallet = async ({
+  installmentId,
+  amount,
+}: PayInstallmentWalletParams): Promise<ApiResponse<CreditPayWalletData>> => {
+  const formData: LooseFormData = new FormData();
+  formData.append("installment_id", installmentId);
+  if (amount !== undefined && amount !== "") formData.append("amount", amount);
+  const response = await api.post<ApiResponse<CreditPayWalletData>>(apiEndPoints.creditPayWallet, formData);
+  return response.data;
+};
+
+export interface CreditListParams {
+  page?: number;
+  limit?: number;
+}
+
+export const getCreditLedger = async ({
+  page = 1,
+  limit = 20,
+}: CreditListParams = {}): Promise<ApiResponse<CreditLedgerEntry[]>> => {
+  const response = await api.get<ApiResponse<CreditLedgerEntry[]>>(apiEndPoints.creditLedger, {
+    params: { page, limit },
+  });
+  return response.data;
+};
+
+export const getCreditPayments = async ({
+  page = 1,
+  limit = 20,
+}: CreditListParams = {}): Promise<ApiResponse<CreditPayment[]>> => {
+  const response = await api.get<ApiResponse<CreditPayment[]>>(apiEndPoints.creditPayments, {
+    params: { page, limit },
+  });
+  return response.data;
+};
+
+// Store coupons & wallet recharge
+export const redeemCoupon = async ({ code }: { code: string }): Promise<ApiResponse<CouponRedeemData>> => {
+  const formData: LooseFormData = new FormData();
+  formData.append("code", code);
+  const response = await api.post<ApiResponse<CouponRedeemData>>(apiEndPoints.couponRedeem, formData);
+  return response.data;
+};
+
+export const getCouponHistory = async ({
+  page = 1,
+  limit = 20,
+}: CreditListParams = {}): Promise<ApiResponse<CouponHistoryEntry[]>> => {
+  const response = await api.get<ApiResponse<CouponHistoryEntry[]>>(apiEndPoints.couponHistory, {
+    params: { page, limit },
+  });
   return response.data;
 };

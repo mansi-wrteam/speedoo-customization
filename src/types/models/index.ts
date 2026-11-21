@@ -5,6 +5,8 @@ export type * from "./cart";
 export type * from "./catalog";
 export type * from "./checkout";
 export type * from "./city";
+export type * from "./coupon";
+export type * from "./credit";
 export type * from "./language";
 export type * from "./misc";
 export type * from "./module";

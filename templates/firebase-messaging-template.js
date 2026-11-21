@@ -18,7 +18,7 @@ firebase.initializeApp({
 // Bump this on every edit to this file. It is logged on install/activate and
 // on each message, so you can tell from the console whether the browser is
 // running this version or a stale cached one.
-const SW_VERSION = "2026-09-28.1";
+const SW_VERSION = "2026-11-20.1";
 
 self.addEventListener("install", () => {
   console.log(`[push-sw ${SW_VERSION}] install — calling skipWaiting()`);
@@ -81,7 +81,9 @@ messaging.onBackgroundMessage((payload) => {
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   const data = event.notification.data || {};
-  const url = data.url || data.click_action || "/";
+  // Credit notifications (type "credit") open the credit page.
+  const type = data.type || (data.FCM_MSG && data.FCM_MSG.data && data.FCM_MSG.data.type);
+  const url = data.url || data.click_action || (type === "credit" ? "/profile/credit" : "/");
   console.log(`[push-sw ${SW_VERSION}] notificationclick -> ${url}`);
 
   event.waitUntil(

@@ -10,9 +10,9 @@ export interface Notification {
   message?: string;
   image_url?: Url;
   date_sent?: DateString;
-  /** Click action: `"category"`, `"product"` and `"url"` are handled; others do nothing. */
+  /** Click action: `"category"`, `"product"`, `"credit"` and `"url"` are handled; others do nothing. */
   type?: string;
-  /** Target id: the product for `type` "product", the category for `type` "category". */
+  /** Target id: the product for `type` "product", the category for `type` "category", the installment or application for `type` "credit" (unused: opens the credit page). */
   type_id?: Id;
   /** Opened in a new tab when `type` is `"url"`. */
   link_url?: Url;

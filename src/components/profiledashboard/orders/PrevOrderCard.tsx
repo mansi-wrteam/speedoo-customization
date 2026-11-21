@@ -4,6 +4,7 @@ import { FaArrowRight } from "react-icons/fa";
 import { LocalizedLink } from "@/utils/localizedNav";
 import ImageWithPlaceholder from "@/components/image-with-placeholder/ImageWithPlaceholder";
 import ReoderConfirmModal from "./ReoderConfirmModal";
+import CreditOrderBadge from "@/components/common/CreditOrderBadge";
 import { useState } from "react";
 import type { RootState } from "@/types/state";
 import type { Order } from "@/types/models";
@@ -36,6 +37,7 @@ const PrevOrderCard = ({ order }: PrevOrderCardProps) => {
               <p className="text-base font-medium leading-6 text-[var(--foreground-primary)]">
                 {order?.id}
               </p>
+              <CreditOrderBadge paymentMethod={order?.payment_method} />
             </div>
             <div className="flex flex-col justify-center gap-1">
               <p className="text-sm font-normal leading-5 text-[var(--foreground-tertiary)]">

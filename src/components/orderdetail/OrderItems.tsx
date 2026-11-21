@@ -78,12 +78,15 @@ export interface OrderItemsProps {
   /** Reloads the order after a cancel, return or rating. */
   handleFetchOrderDetail: () => Promise<void>;
   isShowProductRating: boolean;
+  /** Paid on credit: the cancel and return dialogs explain the schedule change. */
+  isCreditOrder?: boolean;
 }
 
 const OrderItems = ({
   products,
   handleFetchOrderDetail,
   isShowProductRating,
+  isCreditOrder,
 }: OrderItemsProps) => {
   const setting = useSelector((state: RootState) => state.Setting.setting);
   const user = useSelector((state: RootState) => state.User.user);
@@ -427,12 +430,14 @@ const OrderItems = ({
         setShowCancelModal={setShowCancelModal}
         selectedProduct={selectedProduct}
         handleFetchOrderDetail={handleFetchOrderDetail}
+        isCreditOrder={isCreditOrder}
       />
       <ReturnReasonModal
         showReturnModal={showReturnModal}
         setShowReturnModal={setShowReturnModal}
         selectedProduct={selectedProduct}
         handleFetchOrderDetail={handleFetchOrderDetail}
+        isCreditOrder={isCreditOrder}
       />
       <ProductRatingModal
         showRating={showRating}
