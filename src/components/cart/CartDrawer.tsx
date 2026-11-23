@@ -21,6 +21,7 @@ import UnavailableItemsCard from "../cart-checkout/UnavailableItemsCard";
 import BillDetailsCard from "../cart-checkout/BillDetailsCard";
 import PaymentAccordion from "../cart-checkout/PaymentAccordion";
 import CreditPaymentOption, { type CreditQuoteState } from "../cart-checkout/CreditPaymentOption";
+import { isCreditEnabled } from "@/utils/credit";
 import PreferredDeliveryModal from "../cart-checkout/PreferredDeliveryModal";
 import CouponModal from "../cart-checkout/CouponModal";
 import QuickDeliveryCard from "../quick-delivery/QuickDeliveryCard";
@@ -1558,15 +1559,17 @@ const CartDrawer = ({ showCart, onClose, setMobileActiveKey }: CartDrawerProps) 
                 method={checkout?.selectedPaymentMethod}
                 onSelectMethod={selectPaymentMethod}
                 creditOption={
-                  <CreditPaymentOption
-                    productIds={rows.map((row) => row.product_id)}
-                    amount={orderTotal}
-                    selected={isCreditSelected}
-                    onSelect={() => selectPaymentMethod("Credit")}
-                    planId={creditPlanId}
-                    onPlanChange={setCreditPlanId}
-                    onQuoteChange={setCreditQuote}
-                  />
+                  isCreditEnabled() ? (
+                    <CreditPaymentOption
+                      productIds={rows.map((row) => row.product_id)}
+                      amount={orderTotal}
+                      selected={isCreditSelected}
+                      onSelect={() => selectPaymentMethod("Credit")}
+                      planId={creditPlanId}
+                      onPlanChange={setCreditPlanId}
+                      onQuoteChange={setCreditQuote}
+                    />
+                  ) : undefined
                 }
                 codAllowed={codAllowed}
                 isPickup={isPickup}

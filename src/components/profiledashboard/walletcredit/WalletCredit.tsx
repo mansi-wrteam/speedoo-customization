@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { t } from "@/utils/translation";
 import { useLocalizedRouter } from "@/utils/localizedNav";
-import { blockedReasonKey } from "@/utils/credit";
+import { blockedReasonKey, isCreditEnabled, walletCreditTitle } from "@/utils/credit";
 import * as api from "@/api/apiRoutes";
 import CardSkeleton from "@/components/skeleton/CardSkeleton";
 import type { CreditStatusData, Installment } from "@/types/models";
@@ -17,15 +17,17 @@ import WalletCreditHistory from "./WalletCreditHistory";
 const WalletCredit = () => {
   const money = useMoney();
   const { query } = useLocalizedRouter();
-  const orderIdParam = typeof query?.order_id === "string" ? query.order_id : undefined;
+  const creditEnabled = isCreditEnabled();
+  const orderIdParam = creditEnabled && typeof query?.order_id === "string" ? query.order_id : undefined;
   const [data, setData] = useState<CreditStatusData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(creditEnabled);
   const [failed, setFailed] = useState(false);
   const [showInstallments, setShowInstallments] = useState(!!orderIdParam);
   const [payItem, setPayItem] = useState<Installment | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
   const fetchStatus = useCallback(async () => {
+    if (!creditEnabled) return;
     setLoading(true);
     setFailed(false);
     try {
@@ -41,11 +43,11 @@ const WalletCredit = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [creditEnabled]);
 
   useEffect(() => {
-    fetchStatus();
-  }, [fetchStatus]);
+    if (creditEnabled) fetchStatus();
+  }, [creditEnabled, fetchStatus]);
 
   const handlePaid = () => {
     setRefreshKey((key) => key + 1);
@@ -58,8 +60,10 @@ const WalletCredit = () => {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h2 className="text-xl font-medium leading-7 text-[var(--foreground-primary)]">{t("wallet_and_credit")}</h2>
-        <p className="text-sm text-[var(--foreground-secondary)]">{t("wallet_and_credit_desc")}</p>
+        <h2 className="text-xl font-medium leading-7 text-[var(--foreground-primary)]">{walletCreditTitle()}</h2>
+        <p className="text-sm text-[var(--foreground-secondary)]">
+          {t(creditEnabled ? "wallet_and_credit_desc" : "wallet_desc")}
+        </p>
       </div>
 
       <div className={`grid grid-cols-1 gap-4 ${approved ? "sm:grid-cols-2" : ""}`}>
@@ -78,7 +82,7 @@ const WalletCredit = () => {
       )}
       {approved && blockedKey && <div className="rounded-lg bg-amber-50 p-3 text-sm text-amber-800">{t(blockedKey)}</div>}
 
-      {!loading && (failed || !data) && (
+      {creditEnabled && !loading && (failed || !data) && (
         <div className="flex flex-col items-start gap-2 rounded-2xl border border-[var(--border-subtle)] p-4">
           <p className="text-sm text-[var(--foreground-secondary)]">{t("credit_load_failed")}</p>
           <button type="button" onClick={fetchStatus} className="text-sm text-[var(--brand-foreground-default)] underline">

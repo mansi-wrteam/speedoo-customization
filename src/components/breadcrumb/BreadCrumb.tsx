@@ -4,6 +4,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { LocalizedLink } from "@/utils/localizedNav";
 import { isRtl } from "@/lib/utils";
 import { t } from "@/utils/translation";
+import { walletCreditTitle } from "@/utils/credit";
 
 const notFoundRoute = ["/order-detail"];
 
@@ -165,7 +166,7 @@ const BreadCrumb = ({ title }: BreadCrumbProps) => {
       return t("order_history");
     }
     if (breadcrumbs[1]?.label === "wallethistory" || breadcrumbs[1]?.label === "wallet-credit") {
-      return t("wallet_and_credit");
+      return walletCreditTitle();
     }
 
     if (breadcrumbs[1]?.label === "requested-products") {
@@ -227,8 +228,8 @@ const BreadCrumb = ({ title }: BreadCrumbProps) => {
     const map: Record<string, string> = {
       activeorders: t("active_orders"),
       orderhistory: t("order_history"),
-      wallethistory: t("wallet_and_credit"),
-      "wallet-credit": t("wallet_and_credit"),
+      wallethistory: walletCreditTitle(),
+      "wallet-credit": walletCreditTitle(),
       "about-us": t("about_us"),
       "contact-us": t("contact_us"),
       categories: t("categories"),
