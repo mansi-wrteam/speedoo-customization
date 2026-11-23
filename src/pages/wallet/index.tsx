@@ -6,7 +6,7 @@ import MetaData from "@/components/metadata-component/MetaData";
 const WalletAlias = () => (
   <>
     <MetaData pageName="/wallet" title={`Wallet - ${process.env.NEXT_PUBLIC_META_TITLE}`} />
-    <RedirectTo to="/profile/wallethistory" />
+    <RedirectTo to="/profile/wallet-credit" />
   </>
 );
 

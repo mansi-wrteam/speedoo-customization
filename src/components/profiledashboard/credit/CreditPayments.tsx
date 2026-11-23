@@ -13,7 +13,13 @@ const STATUS_BADGE: Record<CreditPaymentStatus, string> = {
   rejected: "bg-red-100 text-red-800",
 };
 
-const CreditPayments = () => {
+export interface CreditPaymentsProps {
+  /** Show only the latest N rows, without Load More. */
+  limit?: number;
+}
+
+const CreditPayments = ({ limit }: CreditPaymentsProps) => {
+  const pageSize = limit ?? PAGE_SIZE;
   const money = useMoney();
   const [items, setItems] = useState<CreditPayment[]>([]);
   const [total, setTotal] = useState(0);
@@ -27,7 +33,7 @@ const CreditPayments = () => {
     else setLoadingMore(true);
     setFailed(false);
     try {
-      const response = await api.getCreditPayments({ page: nextPage, limit: PAGE_SIZE });
+      const response = await api.getCreditPayments({ page: nextPage, limit: pageSize });
       if (response.status == 1) {
         setItems((prev) => (nextPage === 1 ? response.data : [...prev, ...response.data]));
         setTotal(response.total ?? 0);
@@ -42,7 +48,7 @@ const CreditPayments = () => {
       setLoading(false);
       setLoadingMore(false);
     }
-  }, []);
+  }, [pageSize]);
 
   useEffect(() => {
     fetchPage(1);
@@ -85,7 +91,7 @@ const CreditPayments = () => {
           <div className="text-sm font-semibold text-[var(--foreground-primary)]">{money(payment.amount)}</div>
         </div>
       ))}
-      {total > items.length && (
+      {!limit && total > items.length && (
         <div className="flex justify-center">
           <button
             type="button"

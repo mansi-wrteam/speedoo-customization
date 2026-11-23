@@ -164,8 +164,8 @@ const BreadCrumb = ({ title }: BreadCrumbProps) => {
     if (breadcrumbs[1]?.label === "orderhistory") {
       return t("order_history");
     }
-    if (breadcrumbs[1]?.label === "wallethistory") {
-      return t("wallet_history");
+    if (breadcrumbs[1]?.label === "wallethistory" || breadcrumbs[1]?.label === "wallet-credit") {
+      return t("wallet_and_credit");
     }
 
     if (breadcrumbs[1]?.label === "requested-products") {
@@ -227,7 +227,8 @@ const BreadCrumb = ({ title }: BreadCrumbProps) => {
     const map: Record<string, string> = {
       activeorders: t("active_orders"),
       orderhistory: t("order_history"),
-      wallethistory: t("wallet_history"),
+      wallethistory: t("wallet_and_credit"),
+      "wallet-credit": t("wallet_and_credit"),
       "about-us": t("about_us"),
       "contact-us": t("contact_us"),
       categories: t("categories"),

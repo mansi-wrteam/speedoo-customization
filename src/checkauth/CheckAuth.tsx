@@ -13,7 +13,7 @@ const withAuth = <P extends object>(WrappedComponent: ComponentType<P>) => {
         const [authChecked, setAuthChecked] = useState(false)
 
         useEffect(() => {
-            const privateRoutes = ['/profile', '/checkout', '/profile/address', '/profile/activeorders', '/profile/orderhistory', '/profile/wishlist', '/profile/wallethistory', "/profile/transaction", '/profile/notifications', '/profile/subscription'];
+            const privateRoutes = ['/profile', '/checkout', '/profile/address', '/profile/activeorders', '/profile/orderhistory', '/profile/wishlist', '/profile/wallet-credit', "/profile/transaction", '/profile/notifications', '/profile/subscription'];
             const isPrivateRoute = privateRoutes.includes(router.pathname);
 
             if (isPrivateRoute && !user?.jwtToken) {

@@ -1,15 +1,6 @@
-import MetaData from '@/components/metadata-component/MetaData'
-const WalletHistoryPage = dynamic(()=>import('@/components/pagecomponents/WalletHistoryPage'),{ssr:false})
-import dynamic from 'next/dynamic'
+import RedirectToWalletCredit from '@/components/common/RedirectToWalletCredit'
 import React from 'react'
 
-const index = () => {
-    return (
-        <div>
-            <MetaData pageName="/profile/wallet-history" title={`Wallet History - ${process.env.NEXT_PUBLIC_META_TITLE}`} />
-            <WalletHistoryPage />
-        </div>
-    )
-}
+const index = () => <RedirectToWalletCredit />
 
 export default index

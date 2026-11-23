@@ -450,17 +450,17 @@ const ProfileSidebar = ({ setSelectedTab, selectedTab }: ProfileSidebarProps) =>
                   </span>
                 </li>
               </LocalizedLink>
-              <LocalizedLink href={`/profile/wallethistory`}>
+              <LocalizedLink href={`/profile/wallet-credit`}>
                 <li
                   className={`p-4  cursor-pointer opacity-[0.76] ${
-                    activeTab == "wallethistory"
+                    activeTab == "wallet-credit"
                       ? "bg-[var(--brand-background-subtle)] border-l-4 border-l-[var(--brand-foreground-default)] text-[var(--brand-foreground-default)] opacity-100"
                       : "hover:bg-[var(--brand-background-subtle)] hover:text-[var(--brand-foreground-default)] hover:opacity-100"
                   }`}
-                  onClick={() => handleTabChange("wallethistory")}
+                  onClick={() => handleTabChange("wallet-credit")}
                 >
                   <span className="ml-12 md:ml-[0] lg:ml-12">
-                    {t("wallet_history")}
+                    {t("wallet_and_credit")}
                   </span>
                 </li>
               </LocalizedLink>
@@ -476,21 +476,6 @@ const ProfileSidebar = ({ setSelectedTab, selectedTab }: ProfileSidebarProps) =>
                 >
                   <span className="ml-12 md:ml-[0] lg:ml-12">
                     {t("transaction_history")}
-                  </span>
-                </li>
-              </LocalizedLink>
-
-              <LocalizedLink href={`/profile/credit`}>
-                <li
-                  className={`p-4  cursor-pointer opacity-[0.76] ${
-                    activeTab == "credit"
-                      ? "bg-[var(--brand-background-subtle)] border-l-4 border-l-[var(--brand-foreground-default)] text-[var(--brand-foreground-default)] opacity-100"
-                      : "hover:bg-[var(--brand-background-subtle)] hover:text-[var(--brand-foreground-default)] hover:opacity-100"
-                  }`}
-                  onClick={() => handleTabChange("credit")}
-                >
-                  <span className="ml-12 md:ml-[0] lg:ml-12">
-                    {t("credit")}
                   </span>
                 </li>
               </LocalizedLink>

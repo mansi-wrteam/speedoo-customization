@@ -167,7 +167,7 @@ const PaymentStatus = () => {
               {type == "order" && query?.payment_method == "Credit" && (
                 <button
                   className="rounded-lg px-4 py-2 text-base font-medium leading-6 text-[var(--button-outline-foreground-default)] outline outline-1 -outline-offset-1 outline-[var(--button-outline-border-default)] transition-colors hover:bg-[var(--button-outline-background-hover)] hover:text-[var(--button-outline-foreground-hover)]"
-                  onClick={() => router.push("/profile/credit")}
+                  onClick={() => router.push("/profile/wallet-credit")}
                 >
                   {t("credit_view_installments")}
                 </button>

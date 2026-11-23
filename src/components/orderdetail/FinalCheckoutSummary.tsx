@@ -30,7 +30,7 @@ const FinalCheckoutSummary = ({ orderDetail }: FinalCheckoutSummaryProps) => {
           <div className="flex items-center justify-between gap-2">
             <CreditOrderBadge paymentMethod={orderDetail?.payment_method} />
             <LocalizedLink
-              href={`/profile/credit?order_id=${orderDetail?.id}`}
+              href={`/profile/wallet-credit?order_id=${orderDetail?.id}`}
               className="text-sm font-medium text-[var(--button-link-foreground-default)] underline hover:text-[var(--button-link-foreground-hover)]"
             >
               {t("credit_view_installments")}

@@ -635,7 +635,7 @@ const Header = () => {
                               </span>
                             </DropdownMenuItem>
                           </LocalizedLink>
-                          <LocalizedLink href={"/profile/wallethistory"}>
+                          <LocalizedLink href={"/profile/wallet-credit"}>
                             <DropdownMenuItem className="items-center flex justify-start h-full">
                               <span className="flex p-2 gap-2 text-base font-semibold bg-transparent">
                                 <BiWallet size={22} />

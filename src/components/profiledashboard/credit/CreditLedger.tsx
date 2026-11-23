@@ -8,7 +8,13 @@ import { useMoney } from "./useMoney";
 
 const PAGE_SIZE = 15;
 
-const CreditLedger = () => {
+export interface CreditLedgerProps {
+  /** Show only the latest N rows, without Load More. */
+  limit?: number;
+}
+
+const CreditLedger = ({ limit }: CreditLedgerProps) => {
+  const pageSize = limit ?? PAGE_SIZE;
   const money = useMoney();
   const [items, setItems] = useState<CreditLedgerEntry[]>([]);
   const [total, setTotal] = useState(0);
@@ -22,7 +28,7 @@ const CreditLedger = () => {
     else setLoadingMore(true);
     setFailed(false);
     try {
-      const response = await api.getCreditLedger({ page: nextPage, limit: PAGE_SIZE });
+      const response = await api.getCreditLedger({ page: nextPage, limit: pageSize });
       if (response.status == 1) {
         setItems((prev) => (nextPage === 1 ? response.data : [...prev, ...response.data]));
         setTotal(response.total ?? 0);
@@ -37,7 +43,7 @@ const CreditLedger = () => {
       setLoading(false);
       setLoadingMore(false);
     }
-  }, []);
+  }, [pageSize]);
 
   useEffect(() => {
     fetchPage(1);
@@ -92,7 +98,7 @@ const CreditLedger = () => {
           </div>
         );
       })}
-      {total > items.length && (
+      {!limit && total > items.length && (
         <div className="flex justify-center">
           <button
             type="button"

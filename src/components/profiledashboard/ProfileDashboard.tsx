@@ -8,9 +8,8 @@ import OrderHistory from "./orders/PrevOrder";
 import Wishlist from "./Wishlist";
 import Subscription from "./subscriptions/Subscriptions";
 import { useRouter } from "next/router";
-import WalletHistory from "./wallet/WalletHistory";
 import TransactionHistory from "./transactions/TransactionHistory";
-import Credit from "./credit/Credit";
+import WalletCredit from "./walletcredit/WalletCredit";
 import CouponHistory from "./coupon/CouponHistory";
 import Notifications from "./Notifications";
 import { setCurrentUser } from "@/redux/slices/userSlice";
@@ -79,9 +78,8 @@ const ProfileDashboard = () => {
                 {activeTab == "activeorders" && <ActiveOrders />}
                 {activeTab == "orderhistory" && <OrderHistory />}
                 {activeTab == "wishlist" && <Wishlist />}
-                {activeTab == "wallethistory" && <WalletHistory />}
                 {activeTab == "transaction" && <TransactionHistory />}
-                {activeTab == "credit" && <Credit />}
+                {activeTab == "wallet-credit" && <WalletCredit />}
                 {activeTab == "coupon-history" && <CouponHistory />}
                 {activeTab == "notifications" && (
                   <Notifications

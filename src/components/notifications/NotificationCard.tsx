@@ -49,7 +49,7 @@ const NotificationCard = ({ notification }: NotificationCardProps) => {
         toast.error(t("something_went_wrong"));
       }
     } else if (notification?.type === "credit") {
-      router.push("/profile/credit");
+      router.push("/profile/wallet-credit");
     } else if (notification?.type === "url") {
       window.open(notification?.link_url, "_blank");
     }
