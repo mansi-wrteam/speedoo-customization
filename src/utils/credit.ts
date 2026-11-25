@@ -1,10 +1,4 @@
-import { t } from "@/utils/translation";
 import type { CreditBlockedReason, InstallmentStatus } from "@/types/models";
-
-/** Credit & Installments (Module 1) is shipped separately; `NEXT_PUBLIC_ENABLE_CREDIT=true` turns it on. */
-export const isCreditEnabled = (): boolean => process.env.NEXT_PUBLIC_ENABLE_CREDIT === "true";
-
-export const walletCreditTitle = (): string => (isCreditEnabled() ? t("wallet_and_credit") : t("wallet"));
 
 export const INSTALLMENT_STATUS_BADGE: Record<InstallmentStatus, string> = {
   pending: "bg-amber-100 text-amber-800",
@@ -28,4 +22,4 @@ export const installmentRemaining = (amount: number | string, paid: number | str
   Math.max(Number(amount) - Number(paid), 0);
 
 export const isCreditOrder = (paymentMethod: string | null | undefined): boolean =>
-  isCreditEnabled() && paymentMethod?.toLowerCase() === "credit";
+  paymentMethod?.toLowerCase() === "credit";

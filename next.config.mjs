@@ -43,9 +43,19 @@ const nextConfig = {
         port: '',
         pathname: '/images/**',
       }
+
     ],
-    // Always unoptimized (Vercel deploy); static export requires it anyway.
-    unoptimized: true
+    // Optimized in VPS mode, unoptimized in the static export.
+    //
+    // A static export has no server to resize anything, so `output: "export"`
+    // REQUIRES unoptimized images. The standalone build does have one, and on a
+    // product grid the images are the LCP element — a Core Web Vitals ranking
+    // signal — so leaving them unoptimized there cost ranking for no benefit.
+    //
+    // This changes the emitted markup (srcset, /_next/image URLs), which is why
+    // it waited until the SSR phases were verified by HTML diffing.
+    // See SSR_PLAN.md decision 5.
+    unoptimized: process.env.NEXT_PUBLIC_SEO !== "true"
   },
 
   experimental: {

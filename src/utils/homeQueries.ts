@@ -106,6 +106,7 @@ export const useModuleHomePrefetch = () => {
             queryFn: ({ pageParam }) =>
               fetchAllProductsPage(listLat, listLng, moduleId, pageParam as number),
             initialPageParam: 0,
+            getNextPageParam: () => undefined,
             staleTime: HOME_STALE_TIME,
           })
         );

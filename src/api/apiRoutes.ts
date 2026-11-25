@@ -31,6 +31,7 @@ import type {
   CouponHistoryEntry,
   CouponRedeemData,
   CreditDashboardData,
+  CustomerActivity,
   CreditLedgerEntry,
   CreditOrderDetailData,
   CreditPayment,
@@ -1907,6 +1908,16 @@ export const getCreditLedger = async ({
 }: CreditListParams = {}): Promise<ApiResponse<CreditLedgerEntry[]>> => {
   const response = await api.get<ApiResponse<CreditLedgerEntry[]>>(apiEndPoints.creditLedger, {
     params: { page, limit },
+  });
+  return response.data;
+};
+
+export const getCustomerActivity = async ({
+  page = 1,
+  limit = 20,
+}: CreditListParams = {}): Promise<ApiResponse<CustomerActivity[]>> => {
+  const response = await api.get<ApiResponse<CustomerActivity[]>>(apiEndPoints.customerActivity, {
+    params: { type: "all", page, limit },
   });
   return response.data;
 };

@@ -5,7 +5,6 @@ import WalletBalanceModal from "./wallet/WalletBalanceModal";
 import RedeemCouponModal from "./coupon/RedeemCouponModal";
 import { useSelector } from "react-redux";
 import { t } from "@/utils/translation";
-import { walletCreditTitle } from "@/utils/credit";
 import Image from "next/image";
 import ImageWithPlaceholder from "@/components/image-with-placeholder/ImageWithPlaceholder";
 import LogoutModal from "../logoutmodal/LogoutModal";
@@ -461,7 +460,7 @@ const ProfileSidebar = ({ setSelectedTab, selectedTab }: ProfileSidebarProps) =>
                   onClick={() => handleTabChange("wallet-credit")}
                 >
                   <span className="ml-12 md:ml-[0] lg:ml-12">
-                    {walletCreditTitle()}
+                    {t("wallet_and_credit")}
                   </span>
                 </li>
               </LocalizedLink>

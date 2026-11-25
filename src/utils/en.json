@@ -892,7 +892,6 @@
   "history": "History",
   "wallet_and_credit": "Wallet & Credit",
   "wallet_and_credit_desc": "Your balance, installments and activity in one place",
-  "wallet_desc": "Your balance and wallet activity in one place",
   "credit_no_ledger": "No credit transactions yet.",
   "credit_no_payments": "No repayments yet.",
   "credit_outstanding_after": "Outstanding after",

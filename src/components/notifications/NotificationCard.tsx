@@ -1,5 +1,4 @@
 import { formatCustomDate } from "@/lib/utils";
-import { isCreditEnabled } from "@/utils/credit";
 import { setFilterCategory } from "@/redux/slices/productFilterSlice";
 import Image from "next/image";
 import { useLocalizedRouter } from "@/utils/localizedNav";
@@ -49,7 +48,7 @@ const NotificationCard = ({ notification }: NotificationCardProps) => {
         console.log("Error", error);
         toast.error(t("something_went_wrong"));
       }
-    } else if (notification?.type === "credit" && isCreditEnabled()) {
+    } else if (notification?.type === "credit") {
       router.push("/profile/wallet-credit");
     } else if (notification?.type === "url") {
       window.open(notification?.link_url, "_blank");

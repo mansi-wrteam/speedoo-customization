@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { blockedReasonKey, installmentRemaining, isCreditOrder } from "./credit";
 
 describe("blockedReasonKey", () => {
@@ -32,17 +32,9 @@ describe("installmentRemaining", () => {
 });
 
 describe("isCreditOrder", () => {
-  beforeEach(() => vi.stubEnv("NEXT_PUBLIC_ENABLE_CREDIT", "true"));
-  afterEach(() => vi.unstubAllEnvs());
-
   it("matches the Credit payment method case-insensitively", () => {
     expect(isCreditOrder("Credit")).toBe(true);
     expect(isCreditOrder("credit")).toBe(true);
-  });
-
-  it("is false for every method while credit is switched off", () => {
-    vi.stubEnv("NEXT_PUBLIC_ENABLE_CREDIT", "false");
-    expect(isCreditOrder("Credit")).toBe(false);
   });
 
   it("rejects other methods and empty values", () => {

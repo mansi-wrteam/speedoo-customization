@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import { t } from "@/utils/translation";
 import CreditLedger from "../credit/CreditLedger";
 import CreditPayments from "../credit/CreditPayments";
+import ActivityList from "./ActivityList";
 import WalletTransactions from "./WalletTransactions";
 
 type Source = "wallet" | "credit" | "repayments";
 type Filter = "all" | Source;
-
-const ALL_LIMIT = 5;
 
 export interface WalletCreditHistoryProps {
   /** Credit lists are only shown to users with an approved credit account. */
@@ -60,23 +59,11 @@ const WalletCreditHistory = ({ showCredit }: WalletCreditHistoryProps) => {
         </div>
       )}
 
-      {filter === "all"
-        ? sections.map((section) => (
-            <div key={section.id} className="flex flex-col gap-2">
-              <div className="flex items-center justify-between gap-2">
-                <h4 className="text-sm font-medium text-[var(--foreground-secondary)]">{section.title}</h4>
-                <button
-                  type="button"
-                  onClick={() => setFilter(section.id)}
-                  className="text-sm text-[var(--brand-foreground-default)] underline"
-                >
-                  {t("see_all")}
-                </button>
-              </div>
-              {section.list(ALL_LIMIT)}
-            </div>
-          ))
-        : sections.find((section) => section.id === filter)?.list()}
+      {filter === "all" && showCredit ? (
+        <ActivityList />
+      ) : (
+        (sections.find((section) => section.id === (filter === "all" ? "wallet" : filter)) ?? sections[0]).list()
+      )}
     </div>
   );
 };

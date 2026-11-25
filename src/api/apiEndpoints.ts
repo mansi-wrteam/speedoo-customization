@@ -83,6 +83,7 @@ export const creditOrder = "credit/order";
 export const creditPayWallet = "credit/pay_wallet";
 export const creditLedger = "credit/ledger";
 export const creditPayments = "credit/payments";
+export const customerActivity = "activity";
 export const couponRedeem = "coupon/redeem";
 export const couponHistory = "coupon/history";
 

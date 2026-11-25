@@ -181,3 +181,13 @@ export interface CreditLedgerEntry {
   note: Nullable<string>;
   created_at: DateString;
 }
+
+export interface CustomerActivity {
+  id: string;
+  type: string;
+  title: string;
+  amount: Numeric;
+  direction: "in" | "out";
+  order_id: Nullable<Id>;
+  created_at: DateString;
+}
